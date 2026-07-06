@@ -9,19 +9,14 @@ const PUBLIC_ROUTES = [
     { "method": "GET", "url": "/auth" },
 ]
 
+export const config = {
+    matcher: [
+        '/api/clients',
+        '/clients'
+    ]
+}
 
-export async function proxy(request: NextRequest) {
-
-    const pathName = request.nextUrl.pathname;
-    console.log(pathName)
-
-    if (PUBLIC_ROUTES.some(route => route.method === request.method && route.url === pathName)) {
-        return NextResponse.next()
-    }
-
-    if (pathName.startsWith("/_next")) {
-        return NextResponse.next();
-    }
+export default async function proxy(request: NextRequest) {
 
     const token = request.cookies.get('token')?.value;
     let user

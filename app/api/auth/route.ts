@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authUser } from "../../../lib/service/auth"
+import { z } from "zod"
+
+const LoginPayload = z.object({
+    email: z.email(),
+    password: z.string().min(8)
+})
 
 export async function POST(request: NextRequest) {
-    const { email, password } = (await request.json()) as { email: string, password: string };
+    const loginPayload = LoginPayload.safeParse(await request.json())
+    if (!loginPayload.success) {
+        return NextResponse.json({ ok: false });
+    }
+
+    const { email, password } = loginPayload.data;
     const authResult = await authUser(email, password)
 
     if (authResult.success) {

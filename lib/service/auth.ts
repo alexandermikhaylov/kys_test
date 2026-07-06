@@ -17,10 +17,9 @@ export async function authUser(email: string, password: string): Promise<AuthRes
 
     //this should come from the database with actual validation, mock for test purposes
     userPayload = findUserByEmailAndPassword(email, password)
-    if (userPayload) {
-        const tokenPayload = TokenPayloadSchema.parse(userPayload)
-        const user = UserSchema.parse(userPayload)
-        return { success: true, user: user, cookie: await signJWT(user) }
+    const user = UserSchema.safeParse(userPayload)
+    if (user.success) {    
+        return { success: true, user: user?.data, cookie: await signJWT(user) }
     } else {
         return { success: false, error: 'INVALID_CREDENTIALS' }
     }
