@@ -1,31 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkToken } from "./lib/service/auth";
-import { log } from "console";
-
-const PUBLIC_ROUTES = [
-    { "method": "GET", "url": "/api/auth" },
-    { "method": "POST", "url": "/api/auth" },
-    { "method": "GET", "url": "/favicon" },
-    { "method": "GET", "url": "/auth" },
-]
 
 export const config = {
     matcher: [
-        '/api/clients',
-        '/clients'
-    ]
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api/auth (auth routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|auth).*)',
+  ],
 }
 
 export default async function proxy(request: NextRequest) {
 
     const token = request.cookies.get('token')?.value;
-    let user
+    let userId
     if (token) {
-        user = await checkToken(token)
+        userId = await checkToken(token)
     }
 
-    if (user) {
-        return NextResponse.next()
+    if (userId) {
+        const headers = new Headers(request.headers)
+        headers.set("X-USER_ID", userId)
+        return NextResponse.next({
+            request: {
+                headers: headers
+            }
+        })
+
     }
 
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })

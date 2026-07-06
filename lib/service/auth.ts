@@ -27,7 +27,7 @@ export async function authUser(email: string, password: string): Promise<AuthRes
 
 export async function checkToken(token: string) {
     const payload = await verifyJWT(token)
-    return findUserById(payload.id)
+    return payload.id
 }
 
 const users = [
