@@ -1,5 +1,6 @@
 import z from "zod";
 
+export type Client = z.infer<typeof ClientSchema>
 
 export const ClientSchema = z.object({
     id: z.string(),
@@ -7,5 +8,6 @@ export const ClientSchema = z.object({
     registration_number: z.string(),
     country_code: z.string().length(2),
     estimated_revenue: z.number().positive(),
-    status: z.enum(["approved", "pending", "rejected"])
+    status: z.enum(["approved", "pending", "rejected"]),
+    ownerId: z.string()
 })
