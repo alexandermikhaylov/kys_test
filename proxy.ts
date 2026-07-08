@@ -14,6 +14,11 @@ export const config = {
   ],
 }
 
+
+export const HEADERS = {
+    HEADER_USER_ID: "X-USER_ID"
+} 
+
 export default async function proxy(request: NextRequest) {
 
     const token = request.cookies.get('token')?.value;
@@ -24,7 +29,7 @@ export default async function proxy(request: NextRequest) {
 
     if (userId) {
         const headers = new Headers(request.headers)
-        headers.set("X-USER_ID", userId)
+        headers.set(HEADERS.HEADER_USER_ID, userId)
         return NextResponse.next({
             request: {
                 headers: headers

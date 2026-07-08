@@ -32,6 +32,8 @@ const mockClients: Client[] = [
     }
 ]
 
+const RISK_REVENUE_THRESHOLD = 50000;
+const RISK_TRUSTED_COUNTRIES = ["NL", "US"];
 export const ClientService = {
     getClient(id: string): Client | null {
         return mockClients.find(client => client.id === id) ?? null
@@ -46,6 +48,11 @@ export const ClientService = {
     },
 
     createClient(client: Client) {
+        if (client.estimated_revenue > RISK_REVENUE_THRESHOLD && client.country_code in RISK_TRUSTED_COUNTRIES) {
+            client.status = 'approved'
+        } else {
+            client.status = 'pending'
+        }
         //TODO: create client in the database
     }
 }
