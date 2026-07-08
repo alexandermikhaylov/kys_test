@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose'
 import { User, UserSchema } from '@/lib/schema/user';
+import { mockUsers as users } from '@/lib/service/user'
 import z from 'zod';
 import { sign } from 'crypto';
 
@@ -29,21 +30,6 @@ export async function checkToken(token: string) {
     const payload = await verifyJWT(token)
     return payload.id
 }
-
-const users = [
-    {
-        id: "1",
-        login: "applicant",
-        password: "applicant",
-        role: "applicant"
-    },
-    {
-        id: "2",
-        login: "reviewer",
-        password: "reviewer",
-        role: "reviewer"
-    }
-]
 
 function findUserById(id: string) {
     return users.find(user => user.id === id)
