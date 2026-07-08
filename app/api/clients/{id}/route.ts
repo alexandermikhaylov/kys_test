@@ -3,6 +3,7 @@ import { getUser } from "@/lib/service/user"
 import { ClientService } from "@/lib/service/client"
 import { User } from "@/lib/schema/user";
 import { Client } from "@/lib/schema/client";
+import { HEADERS } from "@/proxy";
 
 
 export async function GET(request: NextRequest) {
@@ -40,7 +41,7 @@ export async function DELETE(request: NextRequest) {
 }
 
 function getUserFromRequest(request: NextRequest): User | null {
-    const userId = request.headers.get("X-USER_ID")
+    const userId = request.headers.get(HEADERS.HEADER_USER_ID)
     if (userId) {
         return getUser(userId)
     }
